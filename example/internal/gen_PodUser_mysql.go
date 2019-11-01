@@ -91,6 +91,9 @@ func (mgr *_PodUserMgr) UniFindByNicknameMobilePhone(nickname string, mobilePhon
 	var dt sql.NullString
 
 	if err := row.Scan(&id, &nickname_1, &password, &age, &mobilePhone_1, &sequence, &createDt, &isBlocked, &updateDt, &statsDt, &dt); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
 		return nil, err
 	}
 
@@ -128,6 +131,9 @@ func (mgr *_PodUserMgr) TxUniFindByNicknameMobilePhone(ztx *Ztx, nickname string
 	var dt sql.NullString
 
 	if err := row.Scan(&id, &nickname_1, &password, &age, &mobilePhone_1, &sequence, &createDt, &isBlocked, &updateDt, &statsDt, &dt); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
 		return nil, err
 	}
 
@@ -249,6 +255,9 @@ func (mgr *_PodUserMgr) UniFindByMobilePhone(mobilePhone string) (*PodUser, erro
 	var dt sql.NullString
 
 	if err := row.Scan(&id, &nickname, &password, &age, &mobilePhone_1, &sequence, &createDt, &isBlocked, &updateDt, &statsDt, &dt); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
 		return nil, err
 	}
 
@@ -286,6 +295,9 @@ func (mgr *_PodUserMgr) TxUniFindByMobilePhone(ztx *Ztx, mobilePhone string) (*P
 	var dt sql.NullString
 
 	if err := row.Scan(&id, &nickname, &password, &age, &mobilePhone_1, &sequence, &createDt, &isBlocked, &updateDt, &statsDt, &dt); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
 		return nil, err
 	}
 
@@ -1326,6 +1338,9 @@ func (mgr *_PodUserMgr) UniFindByPK(id int64) (*PodUser, error) {
 	var dt sql.NullString
 
 	if err := row.Scan(&id_1, &nickname, &password, &age, &mobilePhone, &sequence, &createDt, &isBlocked, &updateDt, &statsDt, &dt); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
 		return nil, err
 	}
 
@@ -1362,6 +1377,9 @@ func (mgr *_PodUserMgr) TxUniFindByPK(ztx *Ztx, id int64) (*PodUser, error) {
 	var dt sql.NullString
 
 	if err := row.Scan(&id_1, &nickname, &password, &age, &mobilePhone, &sequence, &createDt, &isBlocked, &updateDt, &statsDt, &dt); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
 		return nil, err
 	}
 

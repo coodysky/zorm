@@ -310,8 +310,11 @@ func (g *gen) genUniFind(args []*parse.F) {
 		}
 		g.B.W("&", vm[f.Camel])
 	}
-	g.B.W("); err!= nil {")
-	g.B.W("return nil, err")
+	g.B.W("); err!= nil {").Ln()
+	g.B.W("if err == sql.ErrNoRows {").Ln()
+	g.B.W("return nil, nil").Ln()
+	g.B.W("}").Ln()
+	g.B.W("return nil, err").Ln()
 	g.B.WL2("}")
 
 	g.B.WL("d := ", g.T, "{}")
@@ -412,8 +415,11 @@ func (g *gen) genTxUniFind(args []*parse.F) {
 		}
 		g.B.W("&", vm[f.Camel])
 	}
-	g.B.W("); err!= nil {")
-	g.B.W("return nil, err")
+	g.B.W("); err!= nil {").Ln()
+	g.B.W("if err == sql.ErrNoRows {").Ln()
+	g.B.W("return nil, nil").Ln()
+	g.B.W("}").Ln()
+	g.B.W("return nil, err").Ln()
 	g.B.WL2("}")
 
 	g.B.WL("d := ", g.T, "{}")
@@ -873,8 +879,11 @@ func (g *gen) genUniFindByPk() {
 		}
 		g.B.W("&", vm[f.Camel])
 	}
-	g.B.W("); err != nil {")
-	g.B.W("return nil, err")
+	g.B.W("); err!= nil {").Ln()
+	g.B.W("if err == sql.ErrNoRows {").Ln()
+	g.B.W("return nil, nil").Ln()
+	g.B.W("}").Ln()
+	g.B.W("return nil, err").Ln()
 	g.B.WL2("}")
 
 	g.B.WL("d := ", g.T, "{}")
@@ -940,8 +949,11 @@ func (g *gen) genTxUniFindByPk() {
 		}
 		g.B.W("&", vm[f.Camel])
 	}
-	g.B.W("); err != nil {")
-	g.B.W("return nil, err")
+	g.B.W("); err!= nil {").Ln()
+	g.B.W("if err == sql.ErrNoRows {").Ln()
+	g.B.W("return nil, nil").Ln()
+	g.B.W("}").Ln()
+	g.B.W("return nil, err").Ln()
 	g.B.WL2("}")
 
 	g.B.WL("d := ", g.T, "{}")
