@@ -1,11 +1,11 @@
 package gen
 
 import (
-	"strconv"
-
+	"fmt"
 	"github.com/envzo/zorm/cls"
 	"github.com/envzo/zorm/parse"
 	"github.com/envzo/zorm/util"
+	"strconv"
 )
 
 func genSql(x *parse.X) string {
@@ -28,6 +28,39 @@ func genSql(x *parse.X) string {
 
 		if v.AutoIncr {
 			b.W(" auto_increment")
+		}
+
+		if v.Default != "" && v.Default != nil {
+			if v.T == cls.YamlTimestamp || v.T == cls.YamlDateTime || v.T == cls.YamlDate  {
+				b.W(fmt.Sprintf(" default %-v", v.Default))
+			} else {
+				b.W(fmt.Sprintf(" default '%-v'", v.Default))
+			}
+		} else {
+			if !v.AutoIncr {
+				switch v.T {
+				case cls.YamlI32:
+					b.W(fmt.Sprintf(" default '%-v'", 0))
+				case cls.YamlBool:
+					b.W(fmt.Sprintf(" default %-v", false))
+				case cls.YamlDate:
+					b.W(fmt.Sprintf(" default '%-v'", "1900-01-01"))
+				case cls.YamlDateTime:
+					b.W(fmt.Sprintf(" default %-v", "0"))
+				case cls.YamlDouble:
+					b.W(fmt.Sprintf(" default '%-v'", 0))
+				case cls.YamlFloat:
+					b.W(fmt.Sprintf(" default '%-v'", 0))
+				case cls.YamlI64:
+					b.W(fmt.Sprintf(" default '%-v'", 0))
+				case cls.YamlStr:
+					b.W(fmt.Sprintf(" default '%-v'", ""))
+				case cls.YamlTimestamp:
+					b.W(fmt.Sprintf(" default %-v", 0))
+				default:
+
+				}
+			}
 		}
 
 		if v.Comment != "" {
