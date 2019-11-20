@@ -700,27 +700,55 @@ func (mgr *_PodUserMgr) FindByMultiJoin(joins []db.Join, where []db.Rule, order 
 	query := `select distinct pod_user.id, pod_user.nickname, pod_user.password, pod_user.age, pod_user.mobile_phone, pod_user.sequence, pod_user.create_dt, pod_user.is_blocked, pod_user.update_dt, pod_user.stats_dt, pod_user.dt from pod.pod_user`
 	for _, join := range joins {
 		query += ` ` + string(join.JType) + ` join pod.` + join.T + ` on `
-		for i, v := range join.Rule {
+
+		splitRules := db.SplitRulesToGroups(join.Rule...)
+
+		isCondNotEmpty := false
+		for _, valueRules := range splitRules {
+			if isCondNotEmpty {
+				query += " or "
+			} else {
+				isCondNotEmpty = true
+			}
+			query += " ( "
+			for i, rule := range valueRules {
+				if i > 0 {
+					query += " and "
+				}
+
+				query += rule.S
+				if rule.P != nil {
+					params = append(params, rule.P)
+				}
+			}
+			query += " ) "
+		}
+	}
+
+	splitRules := db.SplitRulesToGroups(where...)
+
+	isCondNotEmpty := false
+	for _, valueRules := range splitRules {
+		if isCondNotEmpty {
+			query += " or "
+		} else {
+			query += " where "
+			isCondNotEmpty = true
+		}
+		query += " ( "
+		for i, rule := range valueRules {
 			if i > 0 {
 				query += " and "
 			}
-			query += v.S
-			if v.P != nil {
-				params = append(params, v.P)
+
+			query += rule.S
+			if rule.P != nil {
+				params = append(params, rule.P)
 			}
 		}
+		query += " ) "
 	}
-	for i, v := range where {
-		if i == 0 {
-			query += " where "
-		} else {
-			query += " and "
-		}
-		query += v.S
-		if v.P != nil {
-			params = append(params, v.P)
-		}
-	}
+
 	for i, o := range order {
 		if i == 0 {
 			query += " order by "
@@ -790,27 +818,55 @@ func (mgr *_PodUserMgr) TxFindByMultiJoin(ztx *Ztx, joins []db.Join, where []db.
 	query := `select distinct pod_user.id, pod_user.nickname, pod_user.password, pod_user.age, pod_user.mobile_phone, pod_user.sequence, pod_user.create_dt, pod_user.is_blocked, pod_user.update_dt, pod_user.stats_dt, pod_user.dt from pod.pod_user`
 	for _, join := range joins {
 		query += ` ` + string(join.JType) + ` join pod.` + join.T + ` on `
-		for i, v := range join.Rule {
+
+		splitRules := db.SplitRulesToGroups(join.Rule...)
+
+		isCondNotEmpty := false
+		for _, valueRules := range splitRules {
+			if isCondNotEmpty {
+				query += " or "
+			} else {
+				isCondNotEmpty = true
+			}
+			query += " ( "
+			for i, rule := range valueRules {
+				if i > 0 {
+					query += " and "
+				}
+
+				query += rule.S
+				if rule.P != nil {
+					params = append(params, rule.P)
+				}
+			}
+			query += " ) "
+		}
+	}
+
+	splitRules := db.SplitRulesToGroups(where...)
+
+	isCondNotEmpty := false
+	for _, valueRules := range splitRules {
+		if isCondNotEmpty {
+			query += " or "
+		} else {
+			query += " where "
+			isCondNotEmpty = true
+		}
+		query += " ( "
+		for i, rule := range valueRules {
 			if i > 0 {
 				query += " and "
 			}
-			query += v.S
-			if v.P != nil {
-				params = append(params, v.P)
+
+			query += rule.S
+			if rule.P != nil {
+				params = append(params, rule.P)
 			}
 		}
+		query += " ) "
 	}
-	for i, v := range where {
-		if i == 0 {
-			query += " where "
-		} else {
-			query += " and "
-		}
-		query += v.S
-		if v.P != nil {
-			params = append(params, v.P)
-		}
-	}
+
 	for i, o := range order {
 		if i == 0 {
 			query += " order by "
@@ -880,27 +936,55 @@ func (mgr *_PodUserMgr) CountByMultiJoin(joins []db.Join, where []db.Rule) (int6
 	query := `select count(1) from (select distinct pod_user.id, pod_user.nickname, pod_user.password, pod_user.age, pod_user.mobile_phone, pod_user.sequence, pod_user.create_dt, pod_user.is_blocked, pod_user.update_dt, pod_user.stats_dt, pod_user.dt from pod.pod_user`
 	for _, join := range joins {
 		query += ` ` + string(join.JType) + ` join pod.` + join.T + ` on `
-		for i, v := range join.Rule {
+
+		splitRules := db.SplitRulesToGroups(join.Rule...)
+
+		isCondNotEmpty := false
+		for _, valueRules := range splitRules {
+			if isCondNotEmpty {
+				query += " or "
+			} else {
+				isCondNotEmpty = true
+			}
+			query += " ( "
+			for i, rule := range valueRules {
+				if i > 0 {
+					query += " and "
+				}
+
+				query += rule.S
+				if rule.P != nil {
+					params = append(params, rule.P)
+				}
+			}
+			query += " ) "
+		}
+	}
+
+	splitRules := db.SplitRulesToGroups(where...)
+
+	isCondNotEmpty := false
+	for _, valueRules := range splitRules {
+		if isCondNotEmpty {
+			query += " or "
+		} else {
+			query += " where "
+			isCondNotEmpty = true
+		}
+		query += " ( "
+		for i, rule := range valueRules {
 			if i > 0 {
 				query += " and "
 			}
-			query += v.S
-			if v.P != nil {
-				params = append(params, v.P)
+
+			query += rule.S
+			if rule.P != nil {
+				params = append(params, rule.P)
 			}
 		}
+		query += " ) "
 	}
-	for i, v := range where {
-		if i == 0 {
-			query += " where "
-		} else {
-			query += " and "
-		}
-		query += v.S
-		if v.P != nil {
-			params = append(params, v.P)
-		}
-	}
+
 	query += ") t"
 
 	row := db.DB().QueryRow(query, params...)
@@ -919,27 +1003,55 @@ func (mgr *_PodUserMgr) TxCountByMultiJoin(ztx *Ztx, joins []db.Join, where []db
 	query := `select count(1) from (select distinct pod_user.id, pod_user.nickname, pod_user.password, pod_user.age, pod_user.mobile_phone, pod_user.sequence, pod_user.create_dt, pod_user.is_blocked, pod_user.update_dt, pod_user.stats_dt, pod_user.dt from pod.pod_user`
 	for _, join := range joins {
 		query += ` ` + string(join.JType) + ` join pod.` + join.T + ` on `
-		for i, v := range join.Rule {
+
+		splitRules := db.SplitRulesToGroups(join.Rule...)
+
+		isCondNotEmpty := false
+		for _, valueRules := range splitRules {
+			if isCondNotEmpty {
+				query += " or "
+			} else {
+				isCondNotEmpty = true
+			}
+			query += " ( "
+			for i, rule := range valueRules {
+				if i > 0 {
+					query += " and "
+				}
+
+				query += rule.S
+				if rule.P != nil {
+					params = append(params, rule.P)
+				}
+			}
+			query += " ) "
+		}
+	}
+
+	splitRules := db.SplitRulesToGroups(where...)
+
+	isCondNotEmpty := false
+	for _, valueRules := range splitRules {
+		if isCondNotEmpty {
+			query += " or "
+		} else {
+			query += " where "
+			isCondNotEmpty = true
+		}
+		query += " ( "
+		for i, rule := range valueRules {
 			if i > 0 {
 				query += " and "
 			}
-			query += v.S
-			if v.P != nil {
-				params = append(params, v.P)
+
+			query += rule.S
+			if rule.P != nil {
+				params = append(params, rule.P)
 			}
 		}
+		query += " ) "
 	}
-	for i, v := range where {
-		if i == 0 {
-			query += " where "
-		} else {
-			query += " and "
-		}
-		query += v.S
-		if v.P != nil {
-			params = append(params, v.P)
-		}
-	}
+
 	query += ") t"
 
 	row := ztx.QueryRow(query, params...)
@@ -966,15 +1078,30 @@ func (mgr *_PodUserMgr) FindByCond(where []db.Rule, order []string, offset, limi
 	var params []interface{}
 
 	query := `select id, nickname, password, age, mobile_phone, sequence, create_dt, is_blocked, update_dt, stats_dt, dt from pod.pod_user where `
-	for i, v := range where {
-		if i > 0 {
-			query += " and "
+
+	splitRules := db.SplitRulesToGroups(where...)
+
+	isCondNotEmpty := false
+	for _, valueRules := range splitRules {
+		if isCondNotEmpty {
+			query += " or "
+		} else {
+			isCondNotEmpty = true
 		}
-		query += v.S
-		if v.P != nil {
-			params = append(params, v.P)
+		query += " ( "
+		for i, rule := range valueRules {
+			if i > 0 {
+				query += " and "
+			}
+
+			query += rule.S
+			if rule.P != nil {
+				params = append(params, rule.P)
+			}
 		}
+		query += " ) "
 	}
+
 	for i, o := range order {
 		if i == 0 {
 			query += " order by "
@@ -1041,15 +1168,30 @@ func (mgr *_PodUserMgr) TxFindByCond(ztx *Ztx, where []db.Rule, order []string, 
 	var params []interface{}
 
 	query := `select id, nickname, password, age, mobile_phone, sequence, create_dt, is_blocked, update_dt, stats_dt, dt from pod.pod_user where `
-	for i, v := range where {
-		if i > 0 {
-			query += " and "
+
+	splitRules := db.SplitRulesToGroups(where...)
+
+	isCondNotEmpty := false
+	for _, valueRules := range splitRules {
+		if isCondNotEmpty {
+			query += " or "
+		} else {
+			isCondNotEmpty = true
 		}
-		query += v.S
-		if v.P != nil {
-			params = append(params, v.P)
+		query += " ( "
+		for i, rule := range valueRules {
+			if i > 0 {
+				query += " and "
+			}
+
+			query += rule.S
+			if rule.P != nil {
+				params = append(params, rule.P)
+			}
 		}
+		query += " ) "
 	}
+
 	for i, o := range order {
 		if i == 0 {
 			query += " order by "
@@ -1116,17 +1258,31 @@ func (mgr *_PodUserMgr) FindAllByCond(where []db.Rule, order []string) ([]*PodUs
 	var params []interface{}
 
 	query := `select id, nickname, password, age, mobile_phone, sequence, create_dt, is_blocked, update_dt, stats_dt, dt from pod.pod_user `
-	for i, v := range where {
-		if i == 0 {
+
+	splitRules := db.SplitRulesToGroups(where...)
+
+	isCondNotEmpty := false
+	for _, valueRules := range splitRules {
+		if isCondNotEmpty {
+			query += " or "
+		} else {
 			query += " where "
-		} else if i > 0 {
-			query += " and "
+			isCondNotEmpty = true
 		}
-		query += v.S
-		if v.P != nil {
-			params = append(params, v.P)
+		query += " ( "
+		for i, rule := range valueRules {
+			if i > 0 {
+				query += " and "
+			}
+
+			query += rule.S
+			if rule.P != nil {
+				params = append(params, rule.P)
+			}
 		}
+		query += " ) "
 	}
+
 	for i, o := range order {
 		if i == 0 {
 			query += " order by "
@@ -1227,15 +1383,28 @@ func (mgr *_PodUserMgr) CountByRule(rules ...db.Rule) (int64, error) {
 	util.Log(`pod.pod_user`, `CountByRule`)
 	var p []interface{}
 	query := `select count(1) from pod.pod_user where `
-	for i, rule := range rules {
-		if i > 0 {
-			query += " and "
-		}
-		query += rule.S
-		if rule.P != nil {
-			p = append(p, rule.P)
-		}
 
+	splitRules := db.SplitRulesToGroups(rules...)
+
+	isCondNotEmpty := false
+	for _, valueRules := range splitRules {
+		if isCondNotEmpty {
+			query += " or "
+		} else {
+			isCondNotEmpty = true
+		}
+		query += " ( "
+		for i, rule := range valueRules {
+			if i > 0 {
+				query += " and "
+			}
+
+			query += rule.S
+			if rule.P != nil {
+				p = append(p, rule.P)
+			}
+		}
+		query += " ) "
 	}
 
 	row := db.DB().QueryRow(query, p...)
@@ -1254,15 +1423,28 @@ func (mgr *_PodUserMgr) TxCountByRule(ztx *Ztx, rules ...db.Rule) (int64, error)
 	util.Log(`pod.pod_user`, `TxCountByRule`)
 	var p []interface{}
 	query := `select count(1) from pod.pod_user where `
-	for i, rule := range rules {
-		if i > 0 {
-			query += " and "
-		}
-		query += rule.S
-		if rule.P != nil {
-			p = append(p, rule.P)
-		}
 
+	splitRules := db.SplitRulesToGroups(rules...)
+
+	isCondNotEmpty := false
+	for _, valueRules := range splitRules {
+		if isCondNotEmpty {
+			query += " or "
+		} else {
+			isCondNotEmpty = true
+		}
+		query += " ( "
+		for i, rule := range valueRules {
+			if i > 0 {
+				query += " and "
+			}
+
+			query += rule.S
+			if rule.P != nil {
+				p = append(p, rule.P)
+			}
+		}
+		query += " ) "
 	}
 
 	row := ztx.QueryRow(query, p...)
@@ -1281,13 +1463,30 @@ func (mgr *_PodUserMgr) RmByRule(rules ...db.Rule) (int64, error) {
 	util.Log(`pod.pod_user`, `RmByRule`)
 	query := "delete from pod.pod_user where "
 	var p []interface{}
-	for i, r := range rules {
-		if i > 0 {
-			query += " and "
+
+	splitRules := db.SplitRulesToGroups(rules...)
+
+	isCondNotEmpty := false
+	for _, valueRules := range splitRules {
+		if isCondNotEmpty {
+			query += " or "
+		} else {
+			isCondNotEmpty = true
 		}
-		query += r.S
-		p = append(p, r.P)
+		query += " ( "
+		for i, rule := range valueRules {
+			if i > 0 {
+				query += " and "
+			}
+
+			query += rule.S
+			if rule.P != nil {
+				p = append(p, rule.P)
+			}
+		}
+		query += " ) "
 	}
+
 	r, err := db.DB().Exec(query, p...)
 	if err != nil {
 		return 0, err
@@ -1303,13 +1502,30 @@ func (mgr *_PodUserMgr) TxRmByRule(ztx *Ztx, rules ...db.Rule) (int64, error) {
 	util.Log(`pod.pod_user`, `TxRmByRule`)
 	query := "delete from pod.pod_user where "
 	var p []interface{}
-	for i, r := range rules {
-		if i > 0 {
-			query += " and "
+
+	splitRules := db.SplitRulesToGroups(rules...)
+
+	isCondNotEmpty := false
+	for _, valueRules := range splitRules {
+		if isCondNotEmpty {
+			query += " or "
+		} else {
+			isCondNotEmpty = true
 		}
-		query += r.S
-		p = append(p, r.P)
+		query += " ( "
+		for i, rule := range valueRules {
+			if i > 0 {
+				query += " and "
+			}
+
+			query += rule.S
+			if rule.P != nil {
+				p = append(p, rule.P)
+			}
+		}
+		query += " ) "
 	}
+
 	r, err := ztx.Exec(query, p...)
 	if err != nil {
 		return 0, err
